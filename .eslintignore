@@ -1,0 +1,7 @@
+.vscode
+.idea
+.github
+node_modules
+build
+dist
+public/mockServiceWorker.js

@@ -1,0 +1,68 @@
+stages:
+  - install
+  - build
+  - quality
+
+variables:
+  PNPM_STORE_PATH: .pnpm-store
+
+default:
+  image: node:20
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@latest-9 --activate
+    - pnpm config set store-dir $PNPM_STORE_PATH
+  cache:
+    key:
+      files:
+        - pnpm-lock.yaml
+    paths:
+      - $PNPM_STORE_PATH
+
+install:
+  stage: install
+  script:
+    - pnpm install # Установка зависимостей
+  artifacts:
+    paths:
+      - node_modules/ # Сохраняем node_modules для последующих этапов
+      - pnpm-lock.yaml # Сохраняем lock-файл, чтобы избежать изменений
+      - .pnpm-store # Сохраняем глобальный store для повторного использования
+
+build:
+  stage: build
+  script:
+    - pnpm run build # Выполнение команды сборки
+  dependencies:
+    - install # Получаем артефакты с этапа install
+  artifacts:
+    paths:
+      - dist/ # Указываем, какие файлы будут результатом сборки
+
+prettier:
+  stage: quality
+  script:
+    - pnpm run prettier:check # Запуск Prettier для проверки форматирования
+  dependencies:
+    - install # Получаем артефакты с этапа install
+
+eslint:
+  stage: quality
+  script:
+    - pnpm run lint:check # Запуск ESLint для анализа кода
+  dependencies:
+    - install # Получаем артефакты с этапа install
+
+test:
+  stage: quality
+  script:
+    - pnpm run test # Запуск тестов с помощью Vitest
+  dependencies:
+    - install # Получаем артефакты с этапа install
+
+types:
+  stage: quality
+  script:
+    - pnpm run types:check # Запуск проверки типов TypeScript
+  dependencies:
+    - install # Получаем артефакты с этапа install
