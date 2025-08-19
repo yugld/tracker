@@ -1,7 +1,8 @@
-import { format, addDays, startOfWeek, isSameDay } from 'date-fns';
+import { Habit } from '@/lib/types';
+import { format, addDays, startOfWeek } from 'date-fns';
 
 interface HabitCalendarProps {
-  habits: any[];
+  habits: Habit[];
 }
 
 export default function HabitWeek({ habits }: HabitCalendarProps) {

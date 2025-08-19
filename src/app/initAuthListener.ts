@@ -1,8 +1,9 @@
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '@/app/firebase';
 import { store } from '@/app/store';
-import { setUser, type AuthUser } from '@/features/auth/authSlice';
+import { setUser } from '@/features/auth/authSlice';
 import { doc, getDoc } from 'firebase/firestore';
+import { AuthUser } from '@/lib/types';
 
 export const initAuthListener = () => {
   onAuthStateChanged(auth, async (u) => {

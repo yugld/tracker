@@ -16,9 +16,11 @@ import {
   useToggleHabitDoneMutation,
   useDeleteHabitMutation,
 } from '@/features/habits/habitsApi';
+import { Habit } from '@/lib/types';
+import { toastError } from '@/lib/toastError';
 
 interface HabitCardProps {
-  habit: any;
+  habit: Habit;
   today: string;
 }
 
@@ -31,8 +33,8 @@ export default function HabitCard({ habit, today }: HabitCardProps) {
   const handleToggle = async (id: string) => {
     try {
       await toggleDone({ id, date: today }).unwrap();
-    } catch (e: any) {
-      toast.error(e?.message ?? 'Ошибка обновления');
+    } catch (e: unknown) {
+      toastError(e, 'Ошибка обновления');
     }
   };
 
@@ -40,8 +42,8 @@ export default function HabitCard({ habit, today }: HabitCardProps) {
     try {
       await deleteHabit(habit.id).unwrap();
       toast.success('Привычка удалена');
-    } catch (e: any) {
-      toast.error(e?.message ?? 'Ошибка удаления привычки');
+    } catch (e: unknown) {
+      toastError(e, 'Ошибка удаления привычки');
     }
   };
 

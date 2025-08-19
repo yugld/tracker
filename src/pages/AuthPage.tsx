@@ -10,9 +10,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { useForm } from 'react-hook-form';
+import { FieldErrors, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toastError } from '@/lib/toastError';
 
 const loginSchema = z.object({
   email: z.string().email('Введите корректный e-mail'),
@@ -37,8 +38,8 @@ export default function AuthPage() {
     resolver: zodResolver(isRegister ? registerSchema : loginSchema),
     mode: 'onTouched',
     defaultValues: isRegister
-      ? ({ email: '', password: '', name: '' } as any)
-      : { email: '', password: '' },
+      ? ({ email: '', password: '', name: '' } as RegisterData)
+      : ({ email: '', password: '' } as LoginData),
   });
 
   useEffect(() => {
@@ -47,14 +48,14 @@ export default function AuthPage() {
     }
   }, [user, navigate]);
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: LoginData | RegisterData) => {
     try {
       if (isRegister) {
         await dispatch(
           registerEmail({
             email: values.email,
             password: values.password,
-            name: values.name,
+            name: (values as RegisterData).name,
           }),
         ).unwrap();
         toast.success('Регистрация успешна');
@@ -64,8 +65,8 @@ export default function AuthPage() {
         ).unwrap();
         toast.success('Вход выполнен');
       }
-    } catch (e: any) {
-      toast.error(e?.message ?? 'Ошибка авторизации');
+    } catch (e: unknown) {
+      toastError(e, 'Ошибка авторизации');
     }
   };
 
@@ -79,10 +80,16 @@ export default function AuthPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
             {isRegister && (
               <>
-                <Input placeholder="Имя" {...form.register('name' as any)} />
-                {form.formState.errors['name' as any] && (
+                <Input
+                  placeholder="Имя"
+                  {...form.register('name' as keyof RegisterData)}
+                />
+                {(form.formState.errors as FieldErrors<RegisterData>).name && (
                   <p className="text-sm text-red-500">
-                    {(form.formState.errors as any).name.message}
+                    {
+                      (form.formState.errors as FieldErrors<RegisterData>).name
+                        ?.message
+                    }
                   </p>
                 )}
               </>
@@ -126,8 +133,8 @@ export default function AuthPage() {
               try {
                 await dispatch(loginGoogle()).unwrap();
                 toast.success('Вход через Google выполнен');
-              } catch (e: any) {
-                toast.error(e?.message ?? 'Ошибка входа через Google');
+              } catch (e: unknown) {
+                toastError(e, 'Ошибка входа через Google');
               }
             }}
           >

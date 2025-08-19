@@ -1,4 +1,5 @@
 import { auth, db, googleProvider } from '@/app/firebase';
+import { AuthState, AuthUser, RejectedAction } from '@/lib/types';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   createUserWithEmailAndPassword,
@@ -8,20 +9,6 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-
-export type AuthUser = {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  photoURL: string | null;
-};
-
-type AuthState = {
-  user: AuthUser | null;
-  status: 'idle' | 'loading' | 'authenticated' | 'error';
-  error?: string;
-  initialized: boolean;
-};
 
 const initialState: AuthState = {
   user: null,
@@ -54,7 +41,6 @@ export const registerEmail = createAsyncThunk<
 
   await updateProfile(res.user, { displayName: name });
 
-  // создаем документ в Firestore
   await setDoc(doc(db, 'users', res.user.uid), {
     uid: res.user.uid,
     email,
@@ -78,8 +64,8 @@ export const loginEmail = createAsyncThunk<
   const res = await signInWithEmailAndPassword(auth, email, password);
 
   const profileSnap = await getDoc(doc(db, 'users', res.user.uid));
-  const nameFromDb = profileSnap.exists()
-    ? ((profileSnap.data() as any).name ?? null)
+  const nameFromDb: string | null = profileSnap.exists()
+    ? ((profileSnap.data()?.name as string) ?? null)
     : null;
 
   return mapUser({
@@ -144,7 +130,7 @@ const slice = createSlice({
       s.user = a.payload;
       s.status = a.payload ? 'authenticated' : 'idle';
     };
-    const rejected = (s: AuthState, a: any) => {
+    const rejected = (s: AuthState, a: RejectedAction) => {
       s.status = 'error';
       s.error = a.error?.message ?? 'Auth error';
     };

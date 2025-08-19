@@ -7,13 +7,15 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import HabitForm, { HabitFormData } from './HabitForm';
 import {
   useAddHabitMutation,
   useListHabitsQuery,
   useUpdateHabitMutation,
 } from './habitsApi';
 import { toast } from 'sonner';
+import { toastError } from '@/lib/toastError';
+import { HabitFormData } from './habitSchema';
+import HabitForm from './HabitForm';
 
 export default function HabitDialog({
   habitId,
@@ -56,8 +58,8 @@ export default function HabitDialog({
 
       setOpen(false);
       onDone?.();
-    } catch (e: any) {
-      toast.error(e?.message ?? 'Ошибка сохранения привычки');
+    } catch (e: unknown) {
+      toastError(e, 'Ошибка сохранения привычки');
     }
   };
 

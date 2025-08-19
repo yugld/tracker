@@ -39,7 +39,7 @@ export default function HabitPage() {
 
     try {
       await toggleDone({ id: habit.id, date: iso }).unwrap();
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast.error('Ошибка обновления привычки');
     }
   };

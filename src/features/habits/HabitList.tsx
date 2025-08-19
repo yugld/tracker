@@ -80,11 +80,13 @@ export default function HabitList() {
 
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
         <TabsList>
-          {categories.map((cat) => (
-            <TabsTrigger key={cat} value={cat}>
-              {cat}
-            </TabsTrigger>
-          ))}
+          {categories
+            .filter((cat): cat is string => !!cat) // фильтруем undefined
+            .map((cat) => (
+              <TabsTrigger key={cat} value={cat}>
+                {cat}
+              </TabsTrigger>
+            ))}
         </TabsList>
       </Tabs>
 

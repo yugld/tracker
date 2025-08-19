@@ -13,19 +13,7 @@ import {
   getDoc,
 } from 'firebase/firestore';
 import type { RootState } from '@/app/store';
-
-export interface Habit {
-  id: string;
-  title: string;
-  description?: string;
-  category?: string;
-  targetDays: number;
-  completedDays: number;
-  doneDates: string[];
-  createdAt: Date | string;
-  updatedAt: number;
-  archived?: boolean;
-}
+import { Habit } from '@/lib/types';
 
 export const habitsApi = createApi({
   reducerPath: 'habitsApi',

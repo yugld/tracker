@@ -7,10 +7,10 @@ import AuthPage from './pages/AuthPage';
 import HabitPage from './pages/HabitPage';
 import HomePage from './pages/HomePage';
 import { Toaster } from 'sonner';
-import { RootState } from '@reduxjs/toolkit/query';
 import { useSelector } from 'react-redux';
 import { Loading } from './components/ui/loading';
 import NotFound from './pages/NotFoundPage';
+import { RootState } from './app/store';
 
 export const App = () => {
   const { initialized } = useSelector((state: RootState) => state.auth);
