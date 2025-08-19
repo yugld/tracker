@@ -17,6 +17,7 @@ import {
   useDeleteHabitMutation,
   useToggleHabitDoneMutation,
 } from '@/features/habits/habitsApi';
+import { Link } from 'react-router-dom';
 
 export default function HabitList() {
   const { data: habits = [], isLoading } = useListHabitsQuery();
@@ -69,7 +70,9 @@ export default function HabitList() {
             className={isDoneToday ? 'border-green-500' : ''}
           >
             <CardHeader>
-              <CardTitle>{habit.title}</CardTitle>
+              <CardTitle>
+                <Link to={`/habit/${habit.id}`}>{habit.title}</Link>
+              </CardTitle>
               {habit.description && (
                 <CardDescription>{habit.description}</CardDescription>
               )}

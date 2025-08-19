@@ -22,7 +22,7 @@ export interface Habit {
   targetDays: number;
   completedDays: number;
   doneDates: string[];
-  createdAt: number;
+  createdAt: Date | string;
   updatedAt: number;
   archived?: boolean;
 }
@@ -135,36 +135,36 @@ export const habitsApi = createApi({
       },
     }),
 
-    toggleHabitDone: build.mutation<void, { id: string }>({
-      async queryFn({ id }, { getState }) {
+    toggleHabitDone: build.mutation<void, { id: string; date: string }>({
+      async queryFn(
+        { id, date },
+        { getState },
+      ): Promise<{ data: void } | { error: { message: string } }> {
         const state = getState() as RootState;
         const uid = state.auth.user?.uid;
 
         if (!uid) {
-          return { error: { status: 'NO_UID', data: 'No user' } };
+          return { error: { message: 'User not authenticated' } };
         }
 
         const ref = doc(db, 'users', uid, 'habits', id);
         const snap = await getDoc(ref);
 
         if (!snap.exists()) {
-          return { error: { status: 'NOT_FOUND', data: 'Habit not found' } };
+          return { error: { message: 'Habit not found' } };
         }
 
         const habit = snap.data() as Habit;
 
-        const today = new Date().toISOString().split('T')[0];
+        let doneDates = habit.doneDates ?? [];
 
-        let doneDates: string[] = habit.doneDates ?? [];
-        let completedDays: number = habit.completedDays ?? 0;
-
-        if (doneDates.includes(today)) {
-          doneDates = doneDates.filter((d) => d !== today);
-          completedDays = Math.max(0, completedDays - 1);
+        if (doneDates.includes(date)) {
+          doneDates = doneDates.filter((d) => d !== date);
         } else {
-          doneDates = [...doneDates, today];
-          completedDays += 1;
+          doneDates = [...doneDates, date];
         }
+
+        const completedDays = doneDates.length;
 
         await updateDoc(ref, {
           doneDates,
