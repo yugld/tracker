@@ -10,6 +10,7 @@ import { Toaster } from 'sonner';
 import { RootState } from '@reduxjs/toolkit/query';
 import { useSelector } from 'react-redux';
 import { Loading } from './components/ui/loading';
+import NotFound from './pages/NotFoundPage';
 
 export const App = () => {
   const { initialized } = useSelector((state: RootState) => state.auth);
@@ -28,7 +29,7 @@ export const App = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/habit/:id" element={<HabitPage />} />
           </Route>
-          <Route path="*" element={<HomePage />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <Toaster richColors position="top-right" />
       </BrowserRouter>

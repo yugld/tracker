@@ -2,7 +2,6 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-
 const firebaseConfig = {
   apiKey: 'AIzaSyB-lJ5a8gUPsrlDU5uissUvJvx_J5GK7rU',
   authDomain: 'tracker-app-1a3e5.firebaseapp.com',
