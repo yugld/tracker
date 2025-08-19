@@ -1,10 +1,9 @@
-import { BrowserRouter, Route, RouterProvider, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import ErrorBoundary from './components/error-boundary';
 import { ProtectedRoute } from './app/routes';
 import NavBar from './components/NavBar';
 import AuthPage from './pages/AuthPage';
-import EditPage from './pages/EditPage';
 import HabitPage from './pages/HabitPage';
 import HomePage from './pages/HomePage';
 import { Toaster } from 'sonner';
@@ -27,7 +26,6 @@ export const App = () => {
           <Route path="/auth" element={<AuthPage />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<HomePage />} />
-            <Route path="/edit/:type/:id?" element={<EditPage />} />
             <Route path="/habit/:id" element={<HabitPage />} />
           </Route>
           <Route path="*" element={<HomePage />} />

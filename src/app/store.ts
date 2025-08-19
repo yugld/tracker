@@ -7,7 +7,7 @@ export const store = configureStore({
     auth: authReducer,
     [habitsApi.reducerPath]: habitsApi.reducer,
   },
-  middleware: (gDM) => gDM().concat(habitsApi.middleware), 
+  middleware: (gDM) => gDM().concat(habitsApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
