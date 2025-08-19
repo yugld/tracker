@@ -1,5 +1,7 @@
 pnpm i
 firebase
 
--notification
+-footer
+-dnd
 -email notification
+
