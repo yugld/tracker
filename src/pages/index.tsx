@@ -1,11 +1,5 @@
-import Auth from './Auth';
-
 const MainPage = () => {
-  return (
-    <div>
-      <Auth />
-    </div>
-  );
+  return <div>MainPage</div>;
 };
 
 export default MainPage;
