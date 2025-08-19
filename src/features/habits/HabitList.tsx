@@ -68,12 +68,11 @@ export default function HabitList() {
     <div className="space-y-4">
       <HabitWeek habits={habits} />
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="mb-2 flex items-center justify-between gap-2">
         <Input
-          placeholder="Поиск привычки..."
+          placeholder="Поиск"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="mb-2"
         />
         <HabitDialog trigger={null} />
       </div>
@@ -81,7 +80,7 @@ export default function HabitList() {
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
         <TabsList>
           {categories
-            .filter((cat): cat is string => !!cat) // фильтруем undefined
+            .filter((cat): cat is string => !!cat)
             .map((cat) => (
               <TabsTrigger key={cat} value={cat}>
                 {cat}

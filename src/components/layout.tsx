@@ -6,7 +6,7 @@ export const Layout = ({ children, ...rest }: PropsWithChildren) => {
     <>
       <NavBar />
       <main
-        className="grid min-h-screen min-w-[100vw] place-items-center bg-[#282c34] text-[calc(5px+2vmin)] text-[white]"
+        className="min-h-screen min-w-[100vw] place-items-center text-[calc(5px+2vmin)]"
         {...rest}
       >
         <div className="flex min-h-screen min-w-[90%] max-w-[90%] flex-col gap-[20px]">

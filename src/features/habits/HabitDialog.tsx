@@ -66,7 +66,7 @@ export default function HabitDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {trigger ?? <Button>+ Добавить привычку</Button>}
+        {trigger ?? <Button>Добавить привычку</Button>}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

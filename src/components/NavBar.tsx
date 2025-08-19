@@ -14,7 +14,7 @@ export default function NavBar() {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="flex items-center justify-between border-b p-3">
+    <div className="container flex items-center justify-between border-b">
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
