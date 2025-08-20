@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import BackLink from '@/components/BackLink';
 
 export default function HabitPage() {
   const { id } = useParams<{ id: string }>();
@@ -25,7 +26,8 @@ export default function HabitPage() {
   const COLORS = ['#22c55e', '#e5e7eb'];
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-4">
+    <div className="container flex flex-col space-y-4">
+      <BackLink />
       <h1 className="text-2xl font-bold">{habit.title}</h1>
       {habit.description && (
         <p className="text-muted-foreground">{habit.description}</p>
