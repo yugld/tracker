@@ -74,9 +74,8 @@ export const habitsApi = createApi({
           description: body.description ?? '',
           category: body.category ?? 'other',
           targetDays: body.targetDays ?? 21,
-          doneDates: [],
-          completedDays: 0,
-
+          doneDates: body.doneDates ?? [],
+          completedDays: body.doneDates?.length ?? 0,
           createdAt: Date.now(),
           updatedAt: Date.now(),
           archived: body.archived ?? false,
