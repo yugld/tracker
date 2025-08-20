@@ -11,22 +11,15 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { FieldErrors, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toastError } from '@/lib/toastError';
-
-const loginSchema = z.object({
-  email: z.string().email('Введите корректный e-mail'),
-  password: z.string().min(6, 'Минимум 6 символов'),
-});
-
-const registerSchema = loginSchema.extend({
-  name: z.string().min(2, 'Минимум 2 символа').max(50, 'Слишком длинное имя'),
-});
-
-type LoginData = z.infer<typeof loginSchema>;
-
-type RegisterData = z.infer<typeof registerSchema>;
+import {
+  LoginData,
+  RegisterData,
+  registerSchema,
+  loginSchema,
+} from '@/zodSchemas/authSchema';
+import FormError from '@/components/FormError';
 
 export default function AuthPage() {
   const dispatch = useAppDispatch();
@@ -100,22 +93,14 @@ export default function AuthPage() {
               placeholder="E-mail"
               {...form.register('email')}
             />
-            {form.formState.errors.email && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.email.message}
-              </p>
-            )}
+            <FormError error={form.formState.errors.email} />
 
             <Input
               type="password"
               placeholder="Пароль"
               {...form.register('password')}
             />
-            {form.formState.errors.password && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.password.message}
-              </p>
-            )}
+            <FormError error={form.formState.errors.password} />
 
             <Button
               className="w-full"

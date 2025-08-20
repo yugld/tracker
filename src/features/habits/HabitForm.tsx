@@ -22,6 +22,7 @@ import {
 import { Calendar } from '@/components/ui/calendar';
 import { categoryOptions } from '@/constants/categoryOptions';
 import { dateToString, stringToDate } from '@/lib/dateConverting';
+import FormError from '@/components/FormError';
 
 export default function HabitForm({
   defaultValues,
@@ -49,18 +50,10 @@ export default function HabitForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
         <Input placeholder="Название" {...form.register('title')} />
-        {form.formState.errors.title && (
-          <p className="text-sm text-red-500">
-            {form.formState.errors.title.message}
-          </p>
-        )}
+        <FormError error={form.formState.errors.title} />
 
         <Textarea placeholder="Описание" {...form.register('description')} />
-        {form.formState.errors.description && (
-          <p className="text-sm text-red-500">
-            {form.formState.errors.description.message}
-          </p>
-        )}
+        <FormError error={form.formState.errors.description} />
 
         <Select
           onValueChange={(val) => form.setValue('category', val)}
@@ -77,22 +70,14 @@ export default function HabitForm({
             ))}
           </SelectContent>
         </Select>
-        {form.formState.errors.category && (
-          <p className="text-sm text-red-500">
-            {form.formState.errors.category.message}
-          </p>
-        )}
+        <FormError error={form.formState.errors.category} />
 
         <Input
           type="number"
           placeholder="Количество дней"
           {...form.register('targetDays', { valueAsNumber: true })}
         />
-        {form.formState.errors.targetDays && (
-          <p className="text-sm text-red-500">
-            {form.formState.errors.targetDays.message}
-          </p>
-        )}
+        <FormError error={form.formState.errors.targetDays} />
 
         <FormField
           control={form.control}
