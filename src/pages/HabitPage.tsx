@@ -1,19 +1,13 @@
 import { useParams } from 'react-router-dom';
-import {
-  useListHabitsQuery,
-  useToggleHabitDoneMutation,
-} from '@/features/habits/habitsApi';
+import { useListHabitsQuery } from '@/features/habits/habitsApi';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { toast } from 'sonner';
-import { HabitCalendar } from '@/features/habits/HabitCalendar';
 
 export default function HabitPage() {
   const { id } = useParams<{ id: string }>();
   const { data: habits = [] } = useListHabitsQuery();
-  const [toggleDone] = useToggleHabitDoneMutation();
 
   const habit = habits.find((h) => h.id === id);
 
@@ -30,31 +24,12 @@ export default function HabitPage() {
 
   const COLORS = ['#22c55e', '#e5e7eb'];
 
-  const handleSelectDay = async (date: Date | undefined) => {
-    if (!date) {
-      return;
-    }
-
-    const iso = format(date, 'yyyy-MM-dd', { locale: ru });
-
-    try {
-      await toggleDone({ id: habit.id, date: iso }).unwrap();
-    } catch (e: unknown) {
-      toast.error('Ошибка обновления привычки');
-    }
-  };
-
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-4">
       <h1 className="text-2xl font-bold">{habit.title}</h1>
       {habit.description && (
         <p className="text-muted-foreground">{habit.description}</p>
       )}
-      <HabitCalendar
-        habitCreatedAt={habit.createdAt}
-        completionDatesISO={doneDates}
-        onSelectDay={handleSelectDay}
-      />
       <Card>
         <CardHeader>
           <CardTitle>Прогресс</CardTitle>

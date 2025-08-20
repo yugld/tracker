@@ -10,7 +10,18 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
-import { habitSchema, HabitFormData } from './habitSchema';
+import { habitSchema, HabitFormData } from '@/zodSchemas/habitSchema';
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  Form,
+} from '@/components/ui/form';
+import { Calendar } from '@/components/ui/calendar';
+import { categoryOptions } from '@/constants/categoryOptions';
+import { dateToString, stringToDate } from '@/lib/dateConverting';
 
 export default function HabitForm({
   defaultValues,
@@ -29,60 +40,91 @@ export default function HabitForm({
       description: '',
       category: '',
       targetDays: 21,
+      doneDates: [],
       ...defaultValues,
     },
   });
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-      <Input placeholder="Название" {...form.register('title')} />
-      {form.formState.errors.title && (
-        <p className="text-sm text-red-500">
-          {form.formState.errors.title.message}
-        </p>
-      )}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+        <Input placeholder="Название" {...form.register('title')} />
+        {form.formState.errors.title && (
+          <p className="text-sm text-red-500">
+            {form.formState.errors.title.message}
+          </p>
+        )}
 
-      <Textarea placeholder="Описание" {...form.register('description')} />
-      {form.formState.errors.description && (
-        <p className="text-sm text-red-500">
-          {form.formState.errors.description.message}
-        </p>
-      )}
+        <Textarea placeholder="Описание" {...form.register('description')} />
+        {form.formState.errors.description && (
+          <p className="text-sm text-red-500">
+            {form.formState.errors.description.message}
+          </p>
+        )}
 
-      <Select
-        onValueChange={(val) => form.setValue('category', val)}
-        defaultValue={form.getValues('category')}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Выберите категорию" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="health">Здоровье</SelectItem>
-          <SelectItem value="productivity">Продуктивность</SelectItem>
-          <SelectItem value="learning">Обучение</SelectItem>
-          <SelectItem value="other">Другое</SelectItem>
-        </SelectContent>
-      </Select>
-      {form.formState.errors.category && (
-        <p className="text-sm text-red-500">
-          {form.formState.errors.category.message}
-        </p>
-      )}
+        <Select
+          onValueChange={(val) => form.setValue('category', val)}
+          defaultValue={form.getValues('category')}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Выберите категорию" />
+          </SelectTrigger>
+          <SelectContent>
+            {categoryOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {form.formState.errors.category && (
+          <p className="text-sm text-red-500">
+            {form.formState.errors.category.message}
+          </p>
+        )}
 
-      <Input
-        type="number"
-        placeholder="Количество дней"
-        {...form.register('targetDays', { valueAsNumber: true })}
-      />
-      {form.formState.errors.targetDays && (
-        <p className="text-sm text-red-500">
-          {form.formState.errors.targetDays.message}
-        </p>
-      )}
+        <Input
+          type="number"
+          placeholder="Количество дней"
+          {...form.register('targetDays', { valueAsNumber: true })}
+        />
+        {form.formState.errors.targetDays && (
+          <p className="text-sm text-red-500">
+            {form.formState.errors.targetDays.message}
+          </p>
+        )}
 
-      <Button className="w-full" type="submit" disabled={loading}>
-        Сохранить
-      </Button>
-    </form>
+        <FormField
+          control={form.control}
+          name="doneDates"
+          render={({ field }) => (
+            <FormItem className="flex w-full flex-col items-center">
+              <FormLabel className="w-full">Дни с привычкой</FormLabel>
+              <FormControl>
+                <Calendar
+                  className="w-full"
+                  mode="multiple"
+                  selected={field.value?.map(stringToDate)}
+                  weekStartsOn={1}
+                  disabled={(date) => date > new Date()}
+                  onSelect={(dates) =>
+                    field.onChange(
+                      dates
+                        ?.map(dateToString)
+                        .sort((a, b) => b.localeCompare(a)) ?? [],
+                    )
+                  }
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button className="w-full" type="submit" disabled={loading}>
+          Сохранить
+        </Button>
+      </form>
+    </Form>
   );
 }

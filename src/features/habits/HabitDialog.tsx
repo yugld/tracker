@@ -14,7 +14,7 @@ import {
 } from './habitsApi';
 import { toast } from 'sonner';
 import { toastError } from '@/lib/toastError';
-import { HabitFormData } from './habitSchema';
+import { HabitFormData } from '@/zodSchemas/habitSchema';
 import HabitForm from './HabitForm';
 
 export default function HabitDialog({
@@ -43,6 +43,7 @@ export default function HabitDialog({
             description: data.description,
             category: data.category,
             targetDays: data.targetDays,
+            doneDates: data.doneDates,
           },
         }).unwrap();
         toast.success('Привычка обновлена');
@@ -52,6 +53,7 @@ export default function HabitDialog({
           description: data.description,
           category: data.category,
           targetDays: data.targetDays,
+          doneDates: data.doneDates,
         }).unwrap();
         toast.success('Привычка добавлена');
       }
@@ -68,7 +70,7 @@ export default function HabitDialog({
       <DialogTrigger asChild>
         {trigger ?? <Button>Добавить привычку</Button>}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-h-auto flex max-h-[99vh] flex-col overflow-y-auto p-4">
         <DialogHeader>
           <DialogTitle>
             {habit ? 'Редактировать привычку' : 'Новая привычка'}
@@ -83,6 +85,7 @@ export default function HabitDialog({
                   description: habit.description,
                   category: habit.category,
                   targetDays: habit.targetDays,
+                  doneDates: habit.doneDates,
                 }
               : undefined
           }
