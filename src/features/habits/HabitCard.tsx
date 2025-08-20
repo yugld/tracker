@@ -18,6 +18,7 @@ import {
 } from '@/features/habits/habitsApi';
 import { Habit } from '@/lib/types';
 import { toastError } from '@/lib/toastError';
+import { getCategoryLabel } from '@/constants/categoryOptions';
 
 interface HabitCardProps {
   habit: Habit;
@@ -73,7 +74,7 @@ export default function HabitCard({ habit, today }: HabitCardProps) {
         </p>
         {habit.category && (
           <p className="text-xs text-muted-foreground">
-            Категория: {habit.category}
+            Категория: {getCategoryLabel(habit.category)}
           </p>
         )}
       </CardContent>

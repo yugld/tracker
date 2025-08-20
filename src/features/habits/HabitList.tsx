@@ -4,8 +4,9 @@ import { Input } from '@/components/ui/input';
 import HabitCard from './HabitCard';
 import HabitDialog from '@/features/habits/HabitDialog';
 import { useListHabitsQuery } from '@/features/habits/habitsApi';
-import HabitWeek from './HabitWeek';
+// import HabitWeek from './HabitWeek';
 import { AnimatePresence, motion } from 'framer-motion';
+import { getCategoryLabel } from '@/constants/categoryOptions';
 
 export default function HabitList() {
   const { data: habits = [], isLoading } = useListHabitsQuery();
@@ -66,7 +67,7 @@ export default function HabitList() {
 
   return (
     <div className="space-y-4">
-      <HabitWeek habits={habits} />
+      {/* <HabitWeek habits={habits} /> */}
 
       <div className="mb-2 flex items-center justify-between gap-2">
         <Input
@@ -83,7 +84,7 @@ export default function HabitList() {
             .filter((cat): cat is string => !!cat)
             .map((cat) => (
               <TabsTrigger key={cat} value={cat}>
-                {cat}
+                {getCategoryLabel(cat)}
               </TabsTrigger>
             ))}
         </TabsList>
