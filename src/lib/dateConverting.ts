@@ -15,4 +15,3 @@ export function dateToString(date: Date = new Date()) {
 
   return format(date, 'yyyy-MM-dd');
 }
-
