@@ -3,18 +3,15 @@ import { db } from '@/app/firebase';
 import {
   collection,
   addDoc,
-  doc,
   updateDoc,
   deleteDoc,
   onSnapshot,
   query,
   orderBy,
-  DocumentReference,
   getDoc,
 } from 'firebase/firestore';
-import type { RootState } from '@/app/store';
 import { Habit } from '@/lib/types';
-import { format } from 'date-fns';
+import { getUid, habitRef, calculateArchived } from './habitsUtils';
 
 export const habitsApi = createApi({
   reducerPath: 'habitsApi',
@@ -22,15 +19,14 @@ export const habitsApi = createApi({
   tagTypes: ['Habit'],
   endpoints: (build) => ({
     listHabits: build.query<Habit[], void>({
-      async queryFn(): Promise<{ data: Habit[] }> {
+      async queryFn() {
         return { data: [] };
       },
       async onCacheEntryAdded(
         _arg,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState },
       ) {
-        const state = getState() as RootState;
-        const uid = state.auth.user?.uid;
+        const uid = await getUid(getState);
 
         if (!uid) {
           return;
@@ -61,80 +57,9 @@ export const habitsApi = createApi({
       },
     }),
 
-    listHabitsByDate: build.query<Habit[], string | void>({
-      async queryFn() {
-        return { data: [] }; // базовый ответ
-      },
-      async onCacheEntryAdded(
-        date,
-        { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState },
-      ) {
-        const state = getState() as RootState;
-        const uid = state.auth.user?.uid;
-
-        if (!uid) {
-          return;
-        }
-
-        const targetDate = date ?? format(new Date(), 'yyyy-MM-dd');
-        const today = format(new Date(), 'yyyy-MM-dd');
-
-        const q = query(
-          collection(db, 'users', uid, 'habits'),
-          orderBy('createdAt', 'desc'),
-        );
-
-        const unsub = onSnapshot(q, async (snap) => {
-          const items: Habit[] = [];
-
-          for (const d of snap.docs) {
-            const habit = { id: d.id, ...(d.data() as Omit<Habit, 'id'>) };
-            const ref = doc(db, 'users', uid, 'habits', habit.id);
-
-            if (habit.completedDays >= habit.targetDays && !habit.archived) {
-              await updateDoc(ref, { archived: true, updatedAt: Date.now() });
-              habit.archived = true;
-            } else if (
-              habit.completedDays < habit.targetDays &&
-              habit.archived
-            ) {
-              await updateDoc(ref, { archived: false, updatedAt: Date.now() });
-              habit.archived = false;
-            }
-
-            if (targetDate === today) {
-              if (habit.completedDays < habit.targetDays) {
-                items.push(habit);
-              }
-            } else if (targetDate < today) {
-              if (habit.doneDates?.includes(targetDate)) {
-                items.push(habit);
-              }
-            } else {
-              if (habit.completedDays < habit.targetDays) {
-                items.push(habit);
-              }
-            }
-          }
-
-          updateCachedData((draft) => {
-            draft.splice(0, draft.length, ...items);
-          });
-        });
-
-        try {
-          await cacheDataLoaded;
-        } finally {
-          await cacheEntryRemoved;
-          unsub();
-        }
-      },
-    }),
-
     addHabit: build.mutation<void, Partial<Habit>>({
-      queryFn: async (body, { getState }): Promise<{ data: void }> => {
-        const state = getState() as RootState;
-        const uid = state.auth.user?.uid;
+      queryFn: async (body, { getState }) => {
+        const uid = await getUid(getState);
 
         if (!uid) {
           return { data: undefined };
@@ -157,16 +82,14 @@ export const habitsApi = createApi({
     }),
 
     updateHabit: build.mutation<void, { id: string; patch: Partial<Habit> }>({
-      queryFn: async ({ id, patch }, { getState }): Promise<{ data: void }> => {
-        const state = getState() as RootState;
-        const uid = state.auth.user?.uid;
+      queryFn: async ({ id, patch }, { getState }) => {
+        const uid = await getUid(getState);
 
         if (!uid) {
           return { data: undefined };
         }
 
-        const ref: DocumentReference = doc(db, 'users', uid, 'habits', id);
-
+        const ref = habitRef(uid, id);
         const snap = await getDoc(ref);
 
         if (!snap.exists()) {
@@ -174,18 +97,10 @@ export const habitsApi = createApi({
         }
 
         const habit = snap.data() as Habit;
-
         const doneDates = patch.doneDates ?? habit.doneDates ?? [];
+        const archived = calculateArchived(habit, doneDates);
         const completedDays = doneDates.length;
-
         const targetDays = patch.targetDays ?? habit.targetDays ?? 21;
-        let archived = habit.archived ?? false;
-
-        if (completedDays >= targetDays) {
-          archived = true;
-        } else {
-          archived = false;
-        }
 
         await updateDoc(ref, {
           ...patch,
@@ -201,35 +116,28 @@ export const habitsApi = createApi({
     }),
 
     deleteHabit: build.mutation<void, string>({
-      queryFn: async (id, { getState }): Promise<{ data: void }> => {
-        const state = getState() as RootState;
-        const uid = state.auth.user?.uid;
+      queryFn: async (id, { getState }) => {
+        const uid = await getUid(getState);
 
         if (!uid) {
           return { data: undefined };
         }
 
-        const ref: DocumentReference = doc(db, 'users', uid, 'habits', id);
-
-        await deleteDoc(ref);
+        await deleteDoc(habitRef(uid, id));
 
         return { data: undefined };
       },
     }),
 
     toggleHabitDone: build.mutation<void, { id: string; date: string }>({
-      async queryFn(
-        { id, date },
-        { getState },
-      ): Promise<{ data: void } | { error: { message: string } }> {
-        const state = getState() as RootState;
-        const uid = state.auth.user?.uid;
+      async queryFn({ id, date }, { getState }) {
+        const uid = await getUid(getState);
 
         if (!uid) {
           return { error: { message: 'User not authenticated' } };
         }
 
-        const ref = doc(db, 'users', uid, 'habits', id);
+        const ref = habitRef(uid, id);
         const snap = await getDoc(ref);
 
         if (!snap.exists()) {
@@ -237,25 +145,14 @@ export const habitsApi = createApi({
         }
 
         const habit = snap.data() as Habit;
-
         let doneDates = habit.doneDates ?? [];
 
-        if (doneDates.includes(date)) {
-          doneDates = doneDates.filter((d) => d !== date);
-        } else {
-          doneDates = [...doneDates, date];
-        }
+        doneDates = doneDates.includes(date)
+          ? doneDates.filter((d) => d !== date)
+          : [...doneDates, date];
 
+        const archived = calculateArchived(habit, doneDates);
         const completedDays = doneDates.length;
-        const targetDays = habit.targetDays ?? 21;
-
-        let archived = habit.archived ?? false;
-
-        if (completedDays >= targetDays) {
-          archived = true;
-        } else {
-          archived = false;
-        }
 
         await updateDoc(ref, {
           doneDates,
@@ -272,7 +169,6 @@ export const habitsApi = createApi({
 
 export const {
   useListHabitsQuery,
-  useListHabitsByDateQuery,
   useAddHabitMutation,
   useUpdateHabitMutation,
   useDeleteHabitMutation,

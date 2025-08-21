@@ -102,7 +102,6 @@ export default function HabitList() {
             )}
           {habitsToDo.length > 0 && (
             <>
-              <h2 className="text-lg font-semibold">Нужно выполнить</h2>
               {habitsToDo.map((habit) => (
                 <motion.div
                   key={habit.id}

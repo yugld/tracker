@@ -1,4 +1,4 @@
-import { auth, db, googleProvider } from '@/app/firebase';
+import { auth, googleProvider } from '@/app/firebase';
 import { AuthState, AuthUser, RejectedAction } from '@/lib/types';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
@@ -8,7 +8,11 @@ import {
   signOut,
   updateProfile,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+  createAuthThunk,
+  saveUserIfNotExists,
+  buildAuthUser,
+} from './authUtils';
 
 const initialState: AuthState = {
   user: null,
@@ -16,95 +20,35 @@ const initialState: AuthState = {
   initialized: false,
 };
 
-const mapUser = (
-  u: {
-    uid: string;
-    email: string | null;
-    displayName?: string | null;
-    photoURL?: string | null;
-  } | null,
-): AuthUser | null =>
-  u
-    ? {
-        uid: u.uid,
-        email: u.email ?? null,
-        displayName: u.displayName ?? null,
-        photoURL: u.photoURL ?? null,
-      }
-    : null;
-
-export const registerEmail = createAsyncThunk<
-  AuthUser,
-  { email: string; password: string; name: string }
->('auth/registerEmail', async ({ email, password, name }) => {
+export const registerEmail = createAuthThunk<{
+  email: string;
+  password: string;
+  name: string;
+}>('auth/registerEmail', async ({ email, password, name }) => {
   const res = await createUserWithEmailAndPassword(auth, email, password);
 
   await updateProfile(res.user, { displayName: name });
+  await saveUserIfNotExists(res.user, name);
 
-  await setDoc(doc(db, 'users', res.user.uid), {
-    uid: res.user.uid,
-    email,
-    name,
-    photoURL: res.user.photoURL ?? null,
-    createdAt: Date.now(),
-  });
-
-  return mapUser({
-    uid: res.user.uid,
-    email,
-    displayName: name,
-    photoURL: res.user.photoURL ?? null,
-  })!;
+  return buildAuthUser(res.user, name);
 });
 
-export const loginEmail = createAsyncThunk<
-  AuthUser,
-  { email: string; password: string }
->('auth/loginEmail', async ({ email, password }) => {
-  const res = await signInWithEmailAndPassword(auth, email, password);
+export const loginEmail = createAuthThunk<{ email: string; password: string }>(
+  'auth/loginEmail',
+  async ({ email, password }) => {
+    const res = await signInWithEmailAndPassword(auth, email, password);
+    const name = await saveUserIfNotExists(res.user);
 
-  const profileSnap = await getDoc(doc(db, 'users', res.user.uid));
-  const nameFromDb: string | null = profileSnap.exists()
-    ? ((profileSnap.data()?.name as string) ?? null)
-    : null;
-
-  return mapUser({
-    uid: res.user.uid,
-    email: res.user.email,
-    displayName: nameFromDb ?? res.user.displayName ?? null,
-    photoURL: res.user.photoURL ?? null,
-  })!;
-});
-
-export const loginGoogle = createAsyncThunk<AuthUser>(
-  'auth/loginGoogle',
-  async () => {
-    const res = await signInWithPopup(auth, googleProvider);
-
-    const ref = doc(db, 'users', res.user.uid);
-    const snap = await getDoc(ref);
-
-    if (!snap.exists()) {
-      await setDoc(ref, {
-        uid: res.user.uid,
-        email: res.user.email,
-        name: res.user.displayName ?? '',
-        photoURL: res.user.photoURL ?? null,
-        createdAt: Date.now(),
-      });
-    }
-
-    const nameFromDb =
-      (await getDoc(ref)).data()?.name ?? res.user.displayName ?? null;
-
-    return mapUser({
-      uid: res.user.uid,
-      email: res.user.email,
-      displayName: nameFromDb,
-      photoURL: res.user.photoURL ?? null,
-    })!;
+    return buildAuthUser(res.user, name);
   },
 );
+
+export const loginGoogle = createAuthThunk('auth/loginGoogle', async () => {
+  const res = await signInWithPopup(auth, googleProvider);
+  const name = await saveUserIfNotExists(res.user);
+
+  return buildAuthUser(res.user, name);
+});
 
 export const logout = createAsyncThunk('auth/logout', async () => {
   await signOut(auth);
@@ -135,17 +79,11 @@ const slice = createSlice({
       s.error = a.error?.message ?? 'Auth error';
     };
 
-    b.addCase(registerEmail.pending, pending)
-      .addCase(registerEmail.fulfilled, fulfilled)
-      .addCase(registerEmail.rejected, rejected);
-
-    b.addCase(loginEmail.pending, pending)
-      .addCase(loginEmail.fulfilled, fulfilled)
-      .addCase(loginEmail.rejected, rejected);
-
-    b.addCase(loginGoogle.pending, pending)
-      .addCase(loginGoogle.fulfilled, fulfilled)
-      .addCase(loginGoogle.rejected, rejected);
+    [registerEmail, loginEmail, loginGoogle].forEach((thunk) => {
+      b.addCase(thunk.pending, pending)
+        .addCase(thunk.fulfilled, fulfilled)
+        .addCase(thunk.rejected, rejected);
+    });
 
     b.addCase(logout.fulfilled, (s) => {
       s.user = null;
