@@ -1,8 +1,8 @@
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { RootState } from '@/app/store';
 import { Calendar } from '@/components/ui/calendar';
-import { dateToString, stringToDate } from '@/lib/dateConverting';
 import { setSelectedDate } from '@/features/date/dateSlice';
+import { dateToString, stringToDate } from '@/lib/dateConverting';
 
 function CalendarForMainPage() {
   const dispatch = useAppDispatch();

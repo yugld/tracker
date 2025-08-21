@@ -19,6 +19,8 @@ import {
 import { Habit } from '@/lib/types';
 import { toastError } from '@/lib/toastError';
 import { getCategoryLabel } from '@/constants/categoryOptions';
+import { useAppSelector } from '@/app/hooks';
+import { RootState } from '@/app/store';
 
 interface HabitCardProps {
   habit: Habit;
@@ -26,14 +28,17 @@ interface HabitCardProps {
 }
 
 export default function HabitCard({ habit, today }: HabitCardProps) {
+  const selectedDate = useAppSelector(
+    (state: RootState) => state.date.selectedDate,
+  );
   const [toggleDone] = useToggleHabitDoneMutation();
   const [deleteHabit] = useDeleteHabitMutation();
 
-  const isDoneToday = habit.doneDates?.includes(today);
+  const isDone = habit.doneDates?.includes(selectedDate);
 
   const handleToggle = async (id: string) => {
     try {
-      await toggleDone({ id, date: today }).unwrap();
+      await toggleDone({ id: habit.id, date: selectedDate }).unwrap;
     } catch (e: unknown) {
       toastError(e, 'Ошибка обновления');
     }
@@ -49,7 +54,7 @@ export default function HabitCard({ habit, today }: HabitCardProps) {
   };
 
   return (
-    <Card className={isDoneToday ? 'border-green-500' : ''}>
+    <Card className={isDone ? 'border-green-500' : ''}>
       <CardHeader>
         <CardTitle>
           <Link to={`/habit/${habit.id}`}>{habit.title}</Link>
@@ -62,10 +67,10 @@ export default function HabitCard({ habit, today }: HabitCardProps) {
       <CardContent className="space-y-3">
         <div className="flex items-center space-x-2">
           <Checkbox
-            checked={isDoneToday}
+            checked={isDone}
             onCheckedChange={() => handleToggle(habit.id)}
           />
-          <span>Выполнено сегодня</span>
+          <span>Выполнено</span>
         </div>
 
         <Progress value={(habit.completedDays / habit.targetDays) * 100} />

@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore';
 import type { RootState } from '@/app/store';
 import { Habit } from '@/lib/types';
+import { format } from 'date-fns';
 
 export const habitsApi = createApi({
   reducerPath: 'habitsApi',
@@ -62,10 +63,10 @@ export const habitsApi = createApi({
 
     listHabitsByDate: build.query<Habit[], string | void>({
       async queryFn() {
-        return { data: [] };
+        return { data: [] }; // базовый ответ
       },
       async onCacheEntryAdded(
-        _date,
+        date,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState },
       ) {
         const state = getState() as RootState;
@@ -75,16 +76,46 @@ export const habitsApi = createApi({
           return;
         }
 
+        const targetDate = date ?? format(new Date(), 'yyyy-MM-dd');
+        const today = format(new Date(), 'yyyy-MM-dd');
+
         const q = query(
           collection(db, 'users', uid, 'habits'),
           orderBy('createdAt', 'desc'),
         );
 
-        const unsub = onSnapshot(q, (snap) => {
-          const items: Habit[] = snap.docs.map((d) => ({
-            id: d.id,
-            ...(d.data() as Omit<Habit, 'id'>),
-          }));
+        const unsub = onSnapshot(q, async (snap) => {
+          const items: Habit[] = [];
+
+          for (const d of snap.docs) {
+            const habit = { id: d.id, ...(d.data() as Omit<Habit, 'id'>) };
+            const ref = doc(db, 'users', uid, 'habits', habit.id);
+
+            if (habit.completedDays >= habit.targetDays && !habit.archived) {
+              await updateDoc(ref, { archived: true, updatedAt: Date.now() });
+              habit.archived = true;
+            } else if (
+              habit.completedDays < habit.targetDays &&
+              habit.archived
+            ) {
+              await updateDoc(ref, { archived: false, updatedAt: Date.now() });
+              habit.archived = false;
+            }
+
+            if (targetDate === today) {
+              if (habit.completedDays < habit.targetDays) {
+                items.push(habit);
+              }
+            } else if (targetDate < today) {
+              if (habit.doneDates?.includes(targetDate)) {
+                items.push(habit);
+              }
+            } else {
+              if (habit.completedDays < habit.targetDays) {
+                items.push(habit);
+              }
+            }
+          }
 
           updateCachedData((draft) => {
             draft.splice(0, draft.length, ...items);
@@ -136,7 +167,6 @@ export const habitsApi = createApi({
 
         const ref: DocumentReference = doc(db, 'users', uid, 'habits', id);
 
-        // достаём текущую привычку
         const snap = await getDoc(ref);
 
         if (!snap.exists()) {
@@ -145,16 +175,17 @@ export const habitsApi = createApi({
 
         const habit = snap.data() as Habit;
 
-        // обновлённый список дат
         const doneDates = patch.doneDates ?? habit.doneDates ?? [];
         const completedDays = doneDates.length;
 
-        // проверка достижения цели
         const targetDays = patch.targetDays ?? habit.targetDays ?? 21;
-        const archived =
-          completedDays >= targetDays
-            ? true
-            : (patch.archived ?? habit.archived ?? false);
+        let archived = habit.archived ?? false;
+
+        if (completedDays >= targetDays) {
+          archived = true;
+        } else {
+          archived = false;
+        }
 
         await updateDoc(ref, {
           ...patch,
@@ -216,10 +247,20 @@ export const habitsApi = createApi({
         }
 
         const completedDays = doneDates.length;
+        const targetDays = habit.targetDays ?? 21;
+
+        let archived = habit.archived ?? false;
+
+        if (completedDays >= targetDays) {
+          archived = true;
+        } else {
+          archived = false;
+        }
 
         await updateDoc(ref, {
           doneDates,
           completedDays,
+          archived,
           updatedAt: Date.now(),
         });
 
