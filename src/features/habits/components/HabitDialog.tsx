@@ -11,7 +11,7 @@ import {
   useAddHabitMutation,
   useListHabitsQuery,
   useUpdateHabitMutation,
-} from './habitsApi';
+} from '../habitsApi';
 import { toast } from 'sonner';
 import { toastError } from '@/lib/toastError';
 import { HabitFormData } from '@/zodSchemas/habitSchema';
@@ -70,7 +70,10 @@ export default function HabitDialog({
       <DialogTrigger asChild>
         {trigger ?? <Button>Добавить привычку</Button>}
       </DialogTrigger>
-      <DialogContent className="sm:max-h-auto flex max-h-[99vh] flex-col overflow-y-auto p-4">
+      <DialogContent
+        className="sm:max-h-auto flex max-h-[99vh] flex-col overflow-y-auto p-4"
+        aria-describedby={undefined}
+      >
         <DialogHeader>
           <DialogTitle>
             {habit ? 'Редактировать привычку' : 'Новая привычка'}

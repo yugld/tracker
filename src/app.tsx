@@ -7,13 +7,13 @@ import AuthPage from './pages/AuthPage';
 import HabitPage from './pages/HabitPage';
 import HomePage from './pages/HomePage';
 import { Toaster } from 'sonner';
-import { useSelector } from 'react-redux';
 import { Loading } from './components/ui/loading';
 import NotFound from './pages/NotFoundPage';
 import { RootState } from './app/store';
+import { useAppSelector } from './app/hooks';
 
 export const App = () => {
-  const { initialized } = useSelector((state: RootState) => state.auth);
+  const { initialized } = useAppSelector((state: RootState) => state.auth);
 
   if (!initialized) {
     return <Loading />;

@@ -9,7 +9,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import HabitDialog from '@/features/habits/HabitDialog';
+import HabitDialog from '@/features/habits/components/HabitDialog';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import {

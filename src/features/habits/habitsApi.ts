@@ -60,6 +60,46 @@ export const habitsApi = createApi({
       },
     }),
 
+    listHabitsByDate: build.query<Habit[], string | void>({
+      async queryFn() {
+        return { data: [] };
+      },
+      async onCacheEntryAdded(
+        _date,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState },
+      ) {
+        const state = getState() as RootState;
+        const uid = state.auth.user?.uid;
+
+        if (!uid) {
+          return;
+        }
+
+        const q = query(
+          collection(db, 'users', uid, 'habits'),
+          orderBy('createdAt', 'desc'),
+        );
+
+        const unsub = onSnapshot(q, (snap) => {
+          const items: Habit[] = snap.docs.map((d) => ({
+            id: d.id,
+            ...(d.data() as Omit<Habit, 'id'>),
+          }));
+
+          updateCachedData((draft) => {
+            draft.splice(0, draft.length, ...items);
+          });
+        });
+
+        try {
+          await cacheDataLoaded;
+        } finally {
+          await cacheEntryRemoved;
+          unsub();
+        }
+      },
+    }),
+
     addHabit: build.mutation<void, Partial<Habit>>({
       queryFn: async (body, { getState }): Promise<{ data: void }> => {
         const state = getState() as RootState;
@@ -96,8 +136,32 @@ export const habitsApi = createApi({
 
         const ref: DocumentReference = doc(db, 'users', uid, 'habits', id);
 
+        // достаём текущую привычку
+        const snap = await getDoc(ref);
+
+        if (!snap.exists()) {
+          return { data: undefined };
+        }
+
+        const habit = snap.data() as Habit;
+
+        // обновлённый список дат
+        const doneDates = patch.doneDates ?? habit.doneDates ?? [];
+        const completedDays = doneDates.length;
+
+        // проверка достижения цели
+        const targetDays = patch.targetDays ?? habit.targetDays ?? 21;
+        const archived =
+          completedDays >= targetDays
+            ? true
+            : (patch.archived ?? habit.archived ?? false);
+
         await updateDoc(ref, {
           ...patch,
+          doneDates,
+          completedDays,
+          targetDays,
+          archived,
           updatedAt: Date.now(),
         });
 
@@ -167,6 +231,7 @@ export const habitsApi = createApi({
 
 export const {
   useListHabitsQuery,
+  useListHabitsByDateQuery,
   useAddHabitMutation,
   useUpdateHabitMutation,
   useDeleteHabitMutation,
