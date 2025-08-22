@@ -7,15 +7,15 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import {
-  useAddHabitMutation,
-  useListHabitsQuery,
-  useUpdateHabitMutation,
-} from '../../features/habits/habitsApi';
 import { toast } from 'sonner';
 import { toastError } from '@/lib/toastError';
 import { HabitFormData } from '@/zodSchemas/habitSchema';
 import HabitForm from './HabitForm';
+import {
+  useAddHabitMutation,
+  useListHabitsQuery,
+  useUpdateHabitMutation,
+} from '@/features/habits/habitsApi';
 
 export default function HabitDialog({
   habitId,

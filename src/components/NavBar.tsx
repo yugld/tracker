@@ -28,7 +28,7 @@ export default function NavBar() {
       <div className="flex items-center gap-3">
         {user ? (
           <>
-            <span className="text-sm">
+            <span className="xs:block hidden text-sm">
               {user.displayName ? user.displayName : user.email}
             </span>
             <Button variant="outline" onClick={() => dispatch(logout())}>

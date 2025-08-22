@@ -1,5 +1,5 @@
-import HabitSideBar from '@/components/habits/HabitSideBar/HabitSideBar';
 import HabitList from '@/components/habits/HabitList';
+import HabitSideBar from '@/components/habits/HabitSideBar/HabitSideBar';
 
 export default function HomePage() {
   return (

@@ -8,10 +8,11 @@ import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { format, differenceInCalendarDays } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import BackLink from '@/components/BackLink';
-import HabitDialog from '@/components/habits/HabitDialog';
+
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { toastError } from '@/lib/toastError';
+import HabitDialog from '@/components/habits/HabitDialog';
 
 type DaysOfWeek = 'Пн' | 'Вт' | 'Ср' | 'Чт' | 'Пт' | 'Сб' | 'Вс';
 

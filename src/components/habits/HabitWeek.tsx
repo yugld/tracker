@@ -24,7 +24,7 @@ function HabitWeek() {
 
   startOfPeriod.setDate(today.getDate() - currentDayIndex);
 
-  const dates = Array.from({ length: 14 }, (_, i) => {
+  const dates = Array.from({ length: 10 }, (_, i) => {
     const date = new Date(startOfPeriod);
 
     date.setDate(startOfPeriod.getDate() + i);
@@ -42,7 +42,7 @@ function HabitWeek() {
   };
 
   return (
-    <div className="mb-4 flex flex-row justify-center overflow-x-hidden rounded-lg border bg-white py-2">
+    <div className="mb-4 flex flex-row justify-center overflow-hidden rounded-lg border bg-white py-2 sm:px-2">
       {dates.map((date, index) => {
         const isSelected =
           selectedDate && date.toDateString() === selectedDate.toDateString();

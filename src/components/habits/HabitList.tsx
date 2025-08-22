@@ -2,13 +2,14 @@ import { useState, useMemo } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import HabitCard from './HabitCard';
-import HabitDialog from '@/components/habits/HabitDialog';
+
 import { useListHabitsQuery } from '@/features/habits/habitsApi';
 import { AnimatePresence, motion } from 'framer-motion';
 import { getCategoryLabel } from '@/constants/categoryOptions';
 import { useAppSelector } from '@/app/hooks';
 import { RootState } from '@/app/store';
 import HabitWeek from './HabitWeek';
+import HabitDialog from './HabitDialog';
 
 export default function HabitList() {
   const { data: habits = [], isLoading } = useListHabitsQuery();
