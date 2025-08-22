@@ -71,11 +71,11 @@ export default function HabitDialog({
         {trigger ?? <Button>Добавить привычку</Button>}
       </DialogTrigger>
       <DialogContent
-        className="sm:max-h-auto flex max-h-[99vh] flex-col overflow-y-auto p-4"
+        className="sm:max-h-auto flex max-h-[99vh] flex-col overflow-y-auto p-8"
         aria-describedby={undefined}
       >
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-center text-lg">
             {habit ? 'Редактировать привычку' : 'Новая привычка'}
           </DialogTitle>
         </DialogHeader>

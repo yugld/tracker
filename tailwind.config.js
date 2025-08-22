@@ -13,8 +13,8 @@ export const theme = {
     },
     borderRadius: {
       lg: 'var(--radius)',
-      md: 'calc(var(--radius) - 2px)',
-      sm: 'calc(var(--radius) - 4px)',
+      md: 'calc(var(--radius))',
+      sm: 'calc(var(--radius) )',
     },
     colors: {
       background: 'hsl(var(--background))',
@@ -28,7 +28,7 @@ export const theme = {
         foreground: 'hsl(var(--popover-foreground))',
       },
       primary: {
-        DEFAULT: 'hsl(var(--primary))',
+        DEFAULT: 'var(--primary)',
         foreground: 'hsl(var(--primary-foreground))',
       },
       secondary: {
@@ -40,7 +40,7 @@ export const theme = {
         foreground: 'hsl(var(--muted-foreground))',
       },
       accent: {
-        DEFAULT: 'hsl(var(--accent))',
+        DEFAULT: 'var(--accent)',
         foreground: 'hsl(var(--accent-foreground))',
       },
       destructive: {

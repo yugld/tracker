@@ -15,42 +15,12 @@ body {
   width: 100%;
 }
 
-body {
-  font-family:
-    'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-    'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 :root {
   --gap: 12px;
 }
 .container {
   margin: 0 auto;
   padding: 16px;
-}
-.card {
-  border: 1px solid #eaeaea;
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: var(--gap);
-}
-.card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.list {
-  display: grid;
-  gap: 8px;
-}
-@media (min-width: 768px) {
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--gap);
-  }
 }
 
 @layer base {
@@ -61,13 +31,13 @@ body {
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --primary: oklch(0.73 0.16 298.5);
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
+    --accent: oklch(0.91 0.14 120.32);
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -79,7 +49,7 @@ body {
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    --radius: 2.5rem;
   }
   .dark {
     --background: 0 0% 3.9%;

@@ -14,7 +14,7 @@ export default function NavBar() {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="container flex items-center justify-between border-b">
+    <div className="sticky top-2 z-50 flex items-center justify-between rounded-lg border bg-white px-4 py-2 pl-6">
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
@@ -26,15 +26,19 @@ export default function NavBar() {
       </NavigationMenu>
 
       <div className="flex items-center gap-3">
-        {user && (
-          <span className="text-sm">
-            {user.displayName ? user.displayName : user.email}
-          </span>
-        )}
-        {user && (
-          <Button variant="outline" onClick={() => dispatch(logout())}>
-            Выйти
-          </Button>
+        {user ? (
+          <>
+            <span className="text-sm">
+              {user.displayName ? user.displayName : user.email}
+            </span>
+            <Button variant="outline" onClick={() => dispatch(logout())}>
+              Выйти
+            </Button>
+          </>
+        ) : (
+          <Link to="/auth">
+            <Button variant="outline">Войти</Button>
+          </Link>
         )}
       </div>
     </div>

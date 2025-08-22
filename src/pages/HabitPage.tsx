@@ -153,7 +153,7 @@ export default function HabitPage() {
   ];
 
   return (
-    <div className="container flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-4">
       <BackLink />
 
       <div className="flex flex-wrap gap-4">

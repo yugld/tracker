@@ -2,7 +2,7 @@ import CalendarForMainPage from './CalendarForMainPage';
 
 function HabitSideBar() {
   return (
-    <div className="">
+    <div className="hidden lg:block">
       <CalendarForMainPage />
     </div>
   );

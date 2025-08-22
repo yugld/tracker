@@ -48,7 +48,7 @@ export default function HabitForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <Input placeholder="Название" {...form.register('title')} />
         <FormError error={form.formState.errors.title} />
 
@@ -62,7 +62,7 @@ export default function HabitForm({
           <SelectTrigger>
             <SelectValue placeholder="Выберите категорию" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="p-2">
             {categoryOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
@@ -83,8 +83,10 @@ export default function HabitForm({
           control={form.control}
           name="doneDates"
           render={({ field }) => (
-            <FormItem className="flex w-full flex-col items-center">
-              <FormLabel className="w-full">Дни с привычкой</FormLabel>
+            <FormItem className="flex w-full flex-col items-center gap-2">
+              <FormLabel className="text-md w-full text-center">
+                Дни с привычкой
+              </FormLabel>
               <FormControl>
                 <Calendar
                   className="w-full"

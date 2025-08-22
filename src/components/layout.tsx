@@ -1,18 +1,17 @@
 import type { PropsWithChildren } from 'react';
 import NavBar from './NavBar';
+import Footer from './Footer';
 
 export const Layout = ({ children, ...rest }: PropsWithChildren) => {
   return (
-    <>
-      <NavBar />
-      <main
-        className="min-h-screen min-w-[100vw] place-items-center text-[calc(5px+2vmin)]"
-        {...rest}
-      >
-        <div className="flex min-h-screen min-w-[90%] max-w-[90%] flex-col gap-[20px]">
+    <div className="flex min-h-screen w-full flex-col">
+      <div className="container flex-grow">
+        <NavBar />
+        <main className="py-4" {...rest}>
           {children}
-        </div>
-      </main>
-    </>
+        </main>
+      </div>
+      <Footer />
+    </div>
   );
 };

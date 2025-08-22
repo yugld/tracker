@@ -4,13 +4,9 @@ import { Habit } from '@/lib/types';
 
 interface AnimatedHabitCardProps {
   habit: Habit;
-  today: string;
 }
 
-export default function AnimatedHabitCard({
-  habit,
-  today,
-}: AnimatedHabitCardProps) {
+export default function AnimatedHabitCard({ habit }: AnimatedHabitCardProps) {
   return (
     <motion.div
       layout
@@ -20,7 +16,7 @@ export default function AnimatedHabitCard({
       exit={{ opacity: 0, y: 10 }}
       transition={{ duration: 0.3 }}
     >
-      <HabitCard habit={habit} today={today} />
+      <HabitCard habit={habit} />
     </motion.div>
   );
 }

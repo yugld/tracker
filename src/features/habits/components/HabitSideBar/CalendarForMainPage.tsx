@@ -22,7 +22,7 @@ function CalendarForMainPage() {
     <div className="mx-4 flex w-full flex-col items-center">
       <Calendar
         mode="single"
-        className="w-full"
+        className="w-full rounded-lg border"
         onSelect={handleOnChangeDate}
         selected={stringToDate(selectedDate)}
         required
