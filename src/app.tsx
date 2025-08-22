@@ -11,6 +11,7 @@ import { RootState } from '@/app/store';
 import { useAppSelector } from '@/app/hooks';
 import { Loading } from '@/components/Loading';
 import { Layout } from '@/components/layout';
+import DashboardPage from './pages/DashboardPage';
 
 export const App = () => {
   const { initialized } = useAppSelector((state: RootState) => state.auth);
@@ -27,6 +28,7 @@ export const App = () => {
             <Route path="/auth" element={<AuthPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<HomePage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/habit/:id" element={<HabitPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />

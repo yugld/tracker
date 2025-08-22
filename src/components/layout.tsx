@@ -7,7 +7,7 @@ export const Layout = ({ children, ...rest }: PropsWithChildren) => {
     <div className="flex min-h-screen w-full flex-col">
       <div className="container flex-grow">
         <NavBar />
-        <main className="py-4" {...rest}>
+        <main className="py-6" {...rest}>
           {children}
         </main>
       </div>
