@@ -42,7 +42,7 @@ function HabitWeek() {
   };
 
   return (
-    <div className="mb-4 flex flex-row justify-center overflow-hidden rounded-lg border bg-white py-2 sm:px-2">
+    <div className="mb-4 flex flex-row justify-center overflow-x-hidden rounded-lg border bg-white py-2 sm:px-2">
       {dates.map((date, index) => {
         const isSelected =
           selectedDate && date.toDateString() === selectedDate.toDateString();
@@ -51,7 +51,7 @@ function HabitWeek() {
         return (
           <div
             key={index}
-            className={`group flex w-full cursor-pointer justify-center rounded-full transition-all duration-300 ${
+            className={`group flex w-full max-w-[25px] cursor-pointer justify-center rounded-full transition-all duration-300 sm:max-w-full ${
               isSelected
                 ? 'bg-primary shadow-lg'
                 : isToday

@@ -28,7 +28,7 @@ export default function NavBar() {
       <div className="flex items-center gap-3">
         {user ? (
           <>
-            <span className="xs:w-full xs:max-w-[100px] max-w-[50px] truncate sm:max-w-[350px]">
+            <span className="xs:max-w-[100px] max-w-[10px] truncate sm:max-w-[350px]">
               {user.displayName ? user.displayName : user.email}
             </span>
             <Button variant="outline" onClick={() => dispatch(logout())}>
