@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { getCategoryLabel } from '@/constants/categoryOptions';
 import { useAppSelector } from '@/app/hooks';
 import { RootState } from '@/app/store';
+import HabitWeek from './HabitWeek';
 
 export default function HabitList() {
   const { data: habits = [], isLoading } = useListHabitsQuery();
@@ -67,11 +68,12 @@ export default function HabitList() {
   }
 
   const renderArchivedHabits = archivedHabits.map((habit) => (
-    <HabitCard key={habit.id} habit={habit} today={today} />
+    <HabitCard key={habit.id} habit={habit} />
   ));
 
   return (
     <div className="space-y-4">
+      <HabitWeek />
       <div className="mb-2 flex items-center justify-between gap-2">
         <Input
           placeholder="Поиск"
@@ -111,7 +113,7 @@ export default function HabitList() {
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <HabitCard habit={habit} today={today} />
+                  <HabitCard habit={habit} />
                 </motion.div>
               ))}
             </>
@@ -129,7 +131,7 @@ export default function HabitList() {
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <HabitCard habit={habit} today={today} />
+                  <HabitCard habit={habit} />
                 </motion.div>
               ))}
             </>
