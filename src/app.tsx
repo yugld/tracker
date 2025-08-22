@@ -10,7 +10,7 @@ import NotFound from '@/pages/NotFoundPage';
 import { RootState } from '@/app/store';
 import { useAppSelector } from '@/app/hooks';
 import { Loading } from '@/components/Loading';
-import { Layout } from '@/components/Layout';
+import { Layout } from '@/components/layout';
 
 export const App = () => {
   const { initialized } = useAppSelector((state: RootState) => state.auth);
