@@ -23,6 +23,13 @@ body {
   padding: 16px;
 }
 
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+    padding: 20px;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -14,7 +14,7 @@ export default function NavBar() {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="sticky top-2 z-50 flex items-center justify-between rounded-lg border bg-white px-4 py-2 pl-6">
+    <div className="sticky top-2 z-50 flex items-center justify-between rounded-lg border bg-gray-50 px-4 py-2 pl-6">
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
@@ -28,7 +28,7 @@ export default function NavBar() {
       <div className="flex items-center gap-3">
         {user ? (
           <>
-            <span className="xs:block hidden text-sm">
+            <span className="xs:w-full xs:max-w-[150px] max-w-[90px] truncate text-sm sm:max-w-[350px]">
               {user.displayName ? user.displayName : user.email}
             </span>
             <Button variant="outline" onClick={() => dispatch(logout())}>
