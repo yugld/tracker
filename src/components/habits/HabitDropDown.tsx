@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useDeleteHabitMutation } from '../habitsApi';
+import { useDeleteHabitMutation } from '../../features/habits/habitsApi';
 import { Habit } from '@/lib/types';
 
 interface HabitDropDownProps {

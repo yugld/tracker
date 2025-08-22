@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import HabitCard from './HabitCard';
-import HabitDialog from '@/features/habits/components/HabitDialog';
+import HabitDialog from '@/components/habits/HabitDialog';
 import { useListHabitsQuery } from '@/features/habits/habitsApi';
 import { AnimatePresence, motion } from 'framer-motion';
 import { getCategoryLabel } from '@/constants/categoryOptions';

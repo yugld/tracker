@@ -11,7 +11,7 @@ import {
   useAddHabitMutation,
   useListHabitsQuery,
   useUpdateHabitMutation,
-} from '../habitsApi';
+} from '../../features/habits/habitsApi';
 import { toast } from 'sonner';
 import { toastError } from '@/lib/toastError';
 import { HabitFormData } from '@/zodSchemas/habitSchema';
