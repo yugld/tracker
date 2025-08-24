@@ -15,8 +15,7 @@ export default function NavBar() {
       <nav className="sticky top-6 z-50 mx-auto h-16 rounded-full border bg-background">
         <div className="mx-auto flex h-full items-center justify-between px-4">
           <Logo />
-
-          <NavMenu className="hidden md:block" />
+          {user && <NavMenu className="hidden md:block" />}
           <div className="flex items-center gap-3">
             {user ? (
               <>
