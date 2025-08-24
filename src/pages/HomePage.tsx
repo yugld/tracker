@@ -4,7 +4,7 @@ import HabitSideBar from '@/components/habits/HabitSideBar/HabitSideBar';
 export default function HomePage() {
   return (
     <div className="flex w-full flex-row gap-0">
-      <div className="flex-grow">
+      <div className="max-w-[90vw] flex-grow">
         <HabitList />
       </div>
 

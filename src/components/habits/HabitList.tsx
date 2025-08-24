@@ -85,7 +85,7 @@ export default function HabitList() {
       </div>
 
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-        <TabsList>
+        <TabsList className="max-w-[90vw] overflow-x-auto">
           {categories
             .filter((cat): cat is string => !!cat)
             .map((cat) => (
