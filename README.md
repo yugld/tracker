@@ -79,6 +79,13 @@
 
 ### TODO
 
+
 - footer
 - dnd
 - email notification
+
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c6e176ac-fcc4-413d-acf2-de6d0acd8ae0" width="1145" height="692" alt="Снимок экрана 2025-11-12 в 14 31 36" />
+</p>
+
