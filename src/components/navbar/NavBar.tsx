@@ -12,7 +12,10 @@ export default function NavBar() {
 
   return (
     <>
-      <nav className="sticky top-6 z-50 mx-auto h-16 rounded-full border bg-background">
+      <nav
+        data-testid="navbar"
+        className="sticky top-6 z-50 mx-auto h-16 rounded-full border bg-background"
+      >
         <div className="mx-auto flex h-full items-center justify-between px-4">
           <Logo />
           {user && <NavMenu className="hidden md:block" />}

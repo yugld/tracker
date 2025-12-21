@@ -1,17 +1,11 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Suspense } from 'react';
+import { RouterProvider } from 'react-router-dom';
 
-import ErrorBoundary from '@/components/error-boundary';
-import { ProtectedRoute } from '@/app/routes';
-import AuthPage from '@/pages/AuthPage';
-import HabitPage from '@/pages/HabitPage';
-import HomePage from '@/pages/HomePage';
 import { Toaster } from 'sonner';
-import NotFound from '@/pages/NotFoundPage';
 import { RootState } from '@/app/store';
 import { useAppSelector } from '@/app/hooks';
 import { Loading } from '@/components/Loading';
-import { Layout } from '@/components/layout';
-import DashboardPage from './pages/DashboardPage';
+import { router } from './app/router';
 
 export const App = () => {
   const { initialized } = useAppSelector((state: RootState) => state.auth);
@@ -21,21 +15,9 @@ export const App = () => {
   }
 
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/auth" element={<AuthPage />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/habit/:id" element={<HabitPage />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Layout>
-        <Toaster position="top-right" />
-      </BrowserRouter>
-    </ErrorBoundary>
+    <Suspense fallback={<Loading />}>
+      <RouterProvider router={router} />
+      <Toaster position="top-right" />
+    </Suspense>
   );
 };
