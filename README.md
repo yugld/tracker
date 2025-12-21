@@ -80,11 +80,15 @@
 ### TODO
 
 
-- footer
 - dnd
 - email notification
+- заменить на const router = createBrowserRouter
+- Link in NavBar to NavLink  <NavLink to="/" className={({ isActive }) => (isActive ? "active" : "")}> https://alexeykadochnik0v.github.io/js--pro/lesson14/lesson.html#/2/5  useLoaderData } from "react-router";
+React Router v7 рекомендует конфигурационный подход с Data APIs для максимальной производительности.
 
-
+- заменить на Новый route-level lazy https://alexeykadochnik0v.github.io/js--pro/lesson14/lesson.html#/6/4
+ https://alexeykadochnik0v.github.io/js--pro/lesson14/lesson.html#/5/2
+Используйте Suspense для lazy loading компонентов:
 <p align="center">
   <img src="https://github.com/user-attachments/assets/c6e176ac-fcc4-413d-acf2-de6d0acd8ae0" width="1145" height="692" alt="Снимок экрана 2025-11-12 в 14 31 36" />
 </p>

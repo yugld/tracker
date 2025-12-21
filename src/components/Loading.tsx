@@ -1,6 +1,9 @@
 export const Loading = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div
+      data-testid="loading"
+      className="flex min-h-screen items-center justify-center"
+    >
       <div role="status">
         <svg
           aria-hidden="true"

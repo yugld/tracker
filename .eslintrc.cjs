@@ -11,7 +11,7 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ['tsconfig.json'],
+    project: ['tsconfig.json', './tsconfig.playwright.json'],
   },
   plugins: ['react-hooks', 'jsx-a11y', '@stylistic'],
   rules: {
